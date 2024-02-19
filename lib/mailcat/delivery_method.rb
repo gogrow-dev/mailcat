@@ -22,32 +22,38 @@ module Mailcat
         req = Net::HTTP::Post.new(emails_uri)
         req["Content-Type"] = "application/json"
         req["X-Api-Key"] = Mailcat.config.mailcat_api_key
-        req.body = {
-          email: {
-            from: mail.from.first,
-            to: mail.to,
-            bcc: mail.bcc,
-            cc: mail.cc,
-            subject: mail.subject,
-            content: email_content,
-            attachments: attachments_ids
-          }
-        }.to_json
+        email_body = {
+          from: mail.from.first,
+          to: mail.to,
+          bcc: mail.bcc,
+          cc: mail.cc,
+          subject: mail.subject,
+          attachments: attachments_ids,
+          **email_content
+        }
+
+        req.body = { email: email_body }.to_json
 
         http.request(req)
       end
     end
 
     def process_attachments(mail)
-      email_content = mail.body.raw_source
+      processed_email = {}
+      processed_email["html_content"] = mail.html_part.body.raw_source if mail.html_part
+      processed_email["text_content"] = mail.text_part.body.raw_source if mail.text_part
 
       attachments_ids = mail.attachments.map do |attachment|
         upload_attachment(attachment).tap do |blob_id|
-          email_content.gsub!(attachment.url, "mailcat://#{blob_id}")
+          %w[html_content text_content].each do |content_type|
+            next unless processed_email[content_type].present?
+
+            processed_email[content_type].gsub!(attachment.url, "mailcat://#{blob_id}")
+          end
         end
       end
 
-      [email_content, attachments_ids]
+      [processed_email, attachments_ids]
     end
 
     def upload_attachment(attachment)
