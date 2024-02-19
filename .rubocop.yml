@@ -1,0 +1,24 @@
+AllCops:
+  TargetRubyVersion: 3.0
+
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/MethodLength:
+  Max: 20
+
+Style/Documentation:
+  Exclude:
+    - 'lib/mailcat.rb'
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Layout/LineLength:
+  Max: 120
