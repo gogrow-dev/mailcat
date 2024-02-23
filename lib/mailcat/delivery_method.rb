@@ -42,6 +42,7 @@ module Mailcat
       processed_email = {}
       processed_email["html_content"] = mail.html_part.body.raw_source if mail.html_part
       processed_email["text_content"] = mail.text_part.body.raw_source if mail.text_part
+      processed_email["html_content"] ||= mail.body.raw_source
 
       attachments_ids = mail.attachments.map do |attachment|
         upload_attachment(attachment).tap do |blob_id|
