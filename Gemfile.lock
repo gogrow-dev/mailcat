@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mailcat (0.1.0)
+    mailcat (0.1.1)
       activesupport (>= 6.0.0)
 
 GEM
