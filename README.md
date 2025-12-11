@@ -1,24 +1,98 @@
 # Mailcat
 
-TODO: Delete this and the text below, and describe your gem
+A Rails gem that integrates with [Mailcat.app](https://mailcat.app) to easily test your emails in staging and visualize them in a beautiful web interface. Instead of actually sending emails, Mailcat captures them and displays them in your Mailcat dashboard.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/mailcat`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Features
+
+- 🚀 **Zero Configuration**: Automatically registers as an ActionMailer delivery method
+- 📎 **Attachment Support**: Handles email attachments seamlessly
+- 📧 **Multi-format Support**: Works with both HTML and plain text emails
+- ⚙️ **Flexible Configuration**: Configure via environment variables or explicit configuration
+- 🔒 **Secure**: Uses API keys for authentication
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
+```ruby
+gem 'mailcat'
+```
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+And then execute:
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+```bash
+$ bundle install
+```
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+Or install it yourself as:
+
+```bash
+$ gem install mailcat
+```
+
+## Configuration
+
+### Environment Variables (Recommended)
+
+The gem automatically reads configuration from environment variables:
+
+```bash
+export MAILCAT_API_KEY=your_api_key_here
+export MAILCAT_URL=https://mailcat.app
+```
+
+### Explicit Configuration
+
+You can also configure Mailcat explicitly in your Rails initializer or environment files:
+
+```ruby
+# config/initializers/mailcat.rb
+Mailcat.configure do |config|
+  config.mailcat_api_key = "your_api_key_here"
+  config.mailcat_url = "https://mailcat.app"
+end
+```
+
+### Setting the Delivery Method
+
+Configure ActionMailer to use the Mailcat delivery method in your environment configuration:
+
+```ruby
+# config/environments/staging.rb or config/environments/development.rb
+Rails.application.configure do
+  config.action_mailer.delivery_method = :mailcat
+  config.action_mailer.perform_deliveries = true
+end
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+Once configured, your Rails application will automatically send all emails through Mailcat instead of actually delivering them. No changes to your mailer code are required!
+
+```ruby
+# app/mailers/user_mailer.rb
+class UserMailer < ApplicationMailer
+  def welcome_email(user)
+    @user = user
+    mail(to: @user.email, subject: 'Welcome to our app!')
+  end
+end
+```
+
+The email will be captured and displayed in your Mailcat dashboard at the configured URL.
+
+### Features in Action
+
+- **HTML and Text Content**: Both HTML and plain text parts are captured
+- **Attachments**: Email attachments are automatically uploaded and linked
+- **Headers**: All email headers (from, to, cc, bcc, subject) are preserved
+- **Inline Attachments**: Attachments referenced in email content are properly handled
+
+## Requirements
+
+- Ruby >= 3.0.0
+- Rails >= 6.0.0
+- ActiveSupport >= 6.0.0
 
 ## Development
 
@@ -28,7 +102,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/mailcat. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/mailcat/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/gogrow-dev/mailcat. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/gogrow-dev/mailcat/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -36,4 +110,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Mailcat project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/mailcat/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Mailcat project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/gogrow-dev/mailcat/blob/main/CODE_OF_CONDUCT.md).
