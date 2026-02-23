@@ -3,11 +3,7 @@
 module Mailcat
   # Rails delivery_method for Mailcat.
   class DeliveryMethod
-    attr_accessor :settings
-
-    def initialize(...)
-      self.settings = Mailcat.config
-    end
+    def initialize(settings = {}); end
 
     def deliver!(mail)
       send_to_mailcat(mail)
@@ -21,7 +17,7 @@ module Mailcat
       Net::HTTP.start(emails_uri.hostname, emails_uri.port, use_ssl: emails_uri.scheme == "https") do |http|
         req = Net::HTTP::Post.new(emails_uri)
         req["Content-Type"] = "application/json"
-        req["X-Api-Key"] = Mailcat.mailcat_api_key_raw
+        req["X-Api-Key"] = Mailcat.config.mailcat_api_key
         email_body = {
           from: mail.from.first,
           to: mail.to,
@@ -62,7 +58,7 @@ module Mailcat
 
       req = Net::HTTP::Post.new(direct_uploads_uri)
       req["Content-Type"] = "application/json"
-      req["X-Api-Key"] = Mailcat.mailcat_api_key_raw
+      req["X-Api-Key"] = Mailcat.config.mailcat_api_key
       req.body = {
         blob: {
           filename: attachment.filename,
@@ -82,11 +78,11 @@ module Mailcat
     end
 
     def emails_uri
-      @emails_uri ||= URI("#{Mailcat.mailcat_url_raw}/api/emails")
+      @emails_uri ||= URI("#{Mailcat.config.mailcat_url}/api/emails")
     end
 
     def direct_uploads_uri
-      @direct_uploads_uri ||= URI("#{Mailcat.mailcat_url_raw}/api/direct_uploads")
+      @direct_uploads_uri ||= URI("#{Mailcat.config.mailcat_url}/api/direct_uploads")
     end
 
     def attachment_tempfile(attachment)

@@ -5,7 +5,7 @@ RSpec.describe Mailcat do
     expect(Mailcat::VERSION).not_to be nil
   end
 
-  describe "environment variable loader" do
+  describe "configuration" do
     context "when using the default environment variables" do
       before do
         stub_const("ENV", ENV.to_h.merge(
@@ -15,8 +15,8 @@ RSpec.describe Mailcat do
       end
 
       it "uses ENV defaults if not explicitly set" do
-        expect(Mailcat.mailcat_api_key_raw).to eq("spec_key")
-        expect(Mailcat.mailcat_url_raw).to eq("https://spec-url.com")
+        expect(Mailcat.config.mailcat_api_key).to eq("spec_key")
+        expect(Mailcat.config.mailcat_url).to eq("https://spec-url.com")
       end
     end
 
@@ -29,8 +29,8 @@ RSpec.describe Mailcat do
       end
 
       it "uses explicitly set values" do
-        expect(Mailcat.mailcat_api_key_raw).to eq("explicit_key")
-        expect(Mailcat.mailcat_url_raw).to eq("https://explicit-url.com")
+        expect(Mailcat.config.mailcat_api_key).to eq("explicit_key")
+        expect(Mailcat.config.mailcat_url).to eq("https://explicit-url.com")
       end
     end
   end
