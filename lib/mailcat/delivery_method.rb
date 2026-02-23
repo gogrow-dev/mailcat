@@ -3,11 +3,7 @@
 module Mailcat
   # Rails delivery_method for Mailcat.
   class DeliveryMethod
-    attr_accessor :settings
-
-    def initialize(...)
-      self.settings = Mailcat.config
-    end
+    def initialize(settings = {}); end
 
     def deliver!(mail)
       send_to_mailcat(mail)
