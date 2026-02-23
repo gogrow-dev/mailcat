@@ -8,7 +8,6 @@ RSpec.describe Mailcat do
   describe "configuration" do
     context "when using the default environment variables" do
       before do
-        Mailcat.instance_variable_set(:@config, nil)
         stub_const("ENV", ENV.to_h.merge(
                             "MAILCAT_API_KEY" => "spec_key",
                             "MAILCAT_URL" => "https://spec-url.com"
@@ -23,7 +22,6 @@ RSpec.describe Mailcat do
 
     context "when explicitly set" do
       before do
-        Mailcat.instance_variable_set(:@config, nil)
         described_class.configure do |config|
           config.mailcat_api_key = "explicit_key"
           config.mailcat_url = "https://explicit-url.com"
